@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>College Football Rankings</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      h1 {
+        text-align: center;
+      }
+      #ranking-list {
+        margin-top: 20px;
+      }
+      .ranking-item {
+        background: white;
+        border: 1px solid #ccc;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>College Football Rankings</h1>
+    <div>
+      <label for="year-select">Select Year:</label>
+      <select id="year-select">
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <!-- Add more years as needed -->
+      </select>
+      <button onclick="fetchRankings()">Search</button>
+    </div>
+
+    <div id="ranking-list">
+      <!-- Rankings will be displayed here -->
+    </div>
+
+    <script>
+      function fetchRankings() {
+        const year = document.getElementById("year-select").value;
+        const url = `https://4sglxs376d.execute-api.us-west-2.amazonaws.com/rankings?year=${year}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            const rankingList = document.getElementById("ranking-list");
+            rankingList.innerHTML = ""; // Clear existing rankings
+            data.forEach((ranking) => {
+              const rankingItem = document.createElement("div");
+              rankingItem.classList.add("ranking-item");
+              rankingItem.innerHTML = `
+                            <strong>Rank ${ranking.rank}</strong>: ${ranking.team} - ${ranking.wins} Wins, ${ranking.losses} Losses, Score: ${ranking.score}
+                        `;
+              rankingList.appendChild(rankingItem);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching rankings:", error);
+            alert("Error fetching rankings. Please try again later.");
+          });
+      }
+    </script>
+  </body>
+</html>
