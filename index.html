@@ -91,7 +91,7 @@
               const rankingItem = document.createElement("div");
               rankingItem.classList.add("ranking-item");
               rankingItem.innerHTML = `
-                <strong>Rank ${ranking.rank}</strong>: ${ranking.team} - ${ranking.wins} Wins, ${ranking.losses} Losses, Score: ${ranking.score}
+                <strong>${ranking.rank}</strong>: ${ranking.team}: ${ranking.wins} - ${ranking.losses} Score: ${ranking.score}
               `;
               rankingList.appendChild(rankingItem);
             });
