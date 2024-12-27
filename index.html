@@ -23,6 +23,14 @@
         padding: 10px;
         border-radius: 5px;
       }
+      #loading-spinner {
+        display: none;
+        text-align: center;
+      }
+      #loading-spinner img {
+        width: 50px;
+        height: 50px;
+      }
     </style>
   </head>
   <body>
@@ -30,13 +38,22 @@
     <div>
       <label for="year-select">Select Year:</label>
       <select id="year-select">
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-        <option value="2021">2021</option>
-        <option value="2020">2020</option>
-        <!-- Add more years as needed -->
+        <!-- Populating years from 2024 to 1960 -->
+        <script>
+          const yearSelect = document.getElementById("year-select");
+          for (let year = 2024; year >= 1960; year--) {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+          }
+        </script>
       </select>
       <button onclick="fetchRankings()">Search</button>
+    </div>
+
+    <div id="loading-spinner">
+      <img src="https://i.imgur.com/4Q9tH3X.gif" alt="Loading..." />
     </div>
 
     <div id="ranking-list">
@@ -48,21 +65,30 @@
         const year = document.getElementById("year-select").value;
         const url = `https://4sglxs376d.execute-api.us-west-2.amazonaws.com/rankings?year=${year}`;
 
+        // Show the loading spinner
+        document.getElementById("loading-spinner").style.display = "block";
+        document.getElementById("ranking-list").innerHTML = ""; // Clear previous rankings
+
         fetch(url)
           .then((response) => response.json())
           .then((data) => {
+            // Hide the loading spinner
+            document.getElementById("loading-spinner").style.display = "none";
+
             const rankingList = document.getElementById("ranking-list");
-            rankingList.innerHTML = ""; // Clear existing rankings
             data.forEach((ranking) => {
               const rankingItem = document.createElement("div");
               rankingItem.classList.add("ranking-item");
               rankingItem.innerHTML = `
-                            <strong>Rank ${ranking.rank}</strong>: ${ranking.team} - ${ranking.wins} Wins, ${ranking.losses} Losses, Score: ${ranking.score}
-                        `;
+                <strong>Rank ${ranking.rank}</strong>: ${ranking.team} - ${ranking.wins} Wins, ${ranking.losses} Losses, Score: ${ranking.score}
+              `;
               rankingList.appendChild(rankingItem);
             });
           })
           .catch((error) => {
+            // Hide the loading spinner
+            document.getElementById("loading-spinner").style.display = "none";
+
             console.error("Error fetching rankings:", error);
             alert("Error fetching rankings. Please try again later.");
           });
